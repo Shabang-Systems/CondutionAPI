@@ -8,6 +8,7 @@
 //
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 const functions = require('firebase-functions');
+const bodyParser = require('body-parser');
 
 // The Firebase Admin SDK to access Cloud Firestore.
 const admin = require('firebase-admin');
@@ -81,6 +82,8 @@ exports.parseEmail = functions.https.onRequest(async (req, res) => {
     // Grab the text parameter.
     // Send back a message that we've succesfully written the message
     console.log(req.body);
+    let j = JSON.parse(req.body);
+    console.log(j.headers.subject);
     let uid = req.query.uid;
     res.json({result: "success", uid});
 });
