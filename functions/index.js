@@ -77,4 +77,13 @@ exports.addTask = functions.https.onRequest(async (req, res) => {
     });
 });
 
+exports.parseEmail = functions.https.onRequest(async (req, res) => {
+    // Grab the text parameter.
+    // Send back a message that we've succesfully written the message
+    console.log(req.body);
+    let uid = req.query.uid;
+    res.json({result: "success", uid});
+});
+
+
 
