@@ -81,12 +81,10 @@ exports.addTask = functions.https.onRequest(async (req, res) => {
 exports.parseEmail = functions.https.onRequest(async (req, res) => {
     // Grab the text parameter.
     // Send back a message that we've succesfully written the message
-    console.log(req.body);
-    let j = JSON.parse(req.body);
-    console.log(j.headers.subject);
+    let j = req.body;
     let uid = req.query.uid;
     let ntObject = {
-        desc: j.envelope.plain,
+        desc: j.plain,
         isFlagged: false,
         isFloating: true,
         isComplete: false,
@@ -98,15 +96,13 @@ exports.parseEmail = functions.https.onRequest(async (req, res) => {
     }
 
     E.db.newTask(uid, ntObject).then(function(ntid) {
-      res.json({result: "success", uid, payload: {taskId:ntid, taskObject: ntObject}})
+      res.json({result: "success", uid, payload: {taskId:ntid, taskObject: ntObject}});
        return;
     }).catch(function(error) {
       console.log(error);
       //res.json({result: "error", message: "There was an error writing your file", error: error});
       res.send(500, JSON.stringify({result: "error", payload: error}))
     });
-
-    res.json({result: "success", uid});
 });
 
 
