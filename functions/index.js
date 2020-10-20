@@ -85,6 +85,27 @@ exports.parseEmail = functions.https.onRequest(async (req, res) => {
     let j = JSON.parse(req.body);
     console.log(j.headers.subject);
     let uid = req.query.uid;
+    let ntObject = {
+        desc: j.envelope.plain,
+        isFlagged: false,
+        isFloating: true,
+        isComplete: false,
+        project: "",
+        tags: [],
+        timezone: req.query.tz ? req.query.tz : "America/Los_Angeles",
+        repeat: {rule: "none"},
+        name: j.headers.subject,
+    }
+
+    E.db.newTask(uid, ntObject).then(function(ntid) {
+      res.json({result: "success", uid, payload: {taskId:ntid, taskObject: ntObject}})
+       return;
+    }).catch(function(error) {
+      console.log(error);
+      //res.json({result: "error", message: "There was an error writing your file", error: error});
+      res.send(500, JSON.stringify({result: "error", payload: error}))
+    });
+
     res.json({result: "success", uid});
 });
 
